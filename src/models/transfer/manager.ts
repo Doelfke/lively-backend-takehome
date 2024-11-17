@@ -23,6 +23,24 @@ export class TransferManager {
     });
   }
 
+  // Not sure based on the instructions if we should consider
+  // if the funds have been transferred or not
+  public async getTransfersTotal(accountId: number) {
+    const credits = await this.repository.sum("amount", {
+      toAccount: {
+        id: accountId,
+      },
+    });
+
+    const debits = await this.repository.sum("amount", {
+      fromAccount: {
+        id: accountId,
+      },
+    });
+
+    return credits - debits;
+  }
+
   public async markTransferComplete(id: number) {
     return this.repository.update(
       { id },

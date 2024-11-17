@@ -32,23 +32,30 @@ createConnection()
       );
 
       console.log(transfer);
+      console.log();
     });
 
-    const transferManager2 = new TransferManager(connection.manager);
+    console.log("Reconcile account 1:");
+    await accountManager.reconcileBalances(account1.id);
+    console.log();
 
     console.log("transfer 2:");
     await connection.transaction(async (transactionalEntityManager) => {
-      const transfer = await transferManager2.createTransfer(
+      const transfer = await transferManager.createTransfer(
         {
           fromAccount: account1,
           toAccount: account2,
           amount: 100,
-          processImmediately: true,
+          processImmediately: false,
         },
         transactionalEntityManager
       );
 
       console.log(transfer);
     });
+
+    console.log("Reconcile account 2:");
+    await accountManager.reconcileBalances(account2.id);
+    console.log();
   })
   .catch((error) => console.log(error));
